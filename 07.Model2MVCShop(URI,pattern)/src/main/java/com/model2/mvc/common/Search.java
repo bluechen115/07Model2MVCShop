@@ -5,10 +5,11 @@ package com.model2.mvc.common;
 public class Search {
 	
 	///Field
-	private int currentPage;
+	private int currentPage=1;
 	private String searchCondition;
 	private String searchKeyword;
 	private int pageSize;
+	private String orderType;
 	//==> 리스트화면 currentPage에 해당하는 회원정보를 ROWNUM 사용 SELECT 위해 추가된 Field 
 	//==> UserMapper.xml 의 
 	//==> <select  id="getUserList"  parameterType="search"	resultMap="userSelectMap">
@@ -28,6 +29,14 @@ public class Search {
 		this.pageSize = paseSize;
 	}
 	
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
 	public int getCurrentPage() {
 		return currentPage;
 	}
