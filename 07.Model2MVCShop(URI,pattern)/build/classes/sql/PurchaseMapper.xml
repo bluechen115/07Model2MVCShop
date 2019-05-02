@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PurchaseMapper">
+
+	<resultMap id="purchaseSelectMap" type="purchase" >
+		<result property="divyAddr" column="dlvy_addr" jdbcType="VARCHAR"/>
+		<result property="divyDate" column="dlvy_date" jdbcType="DATE"/>
+		<result property="divyRequest" column="dlvy_request" jdbcType="VARCHAR"/>
+		<result property="orderDate" column="order_date" jdbcType="DATE"/>
+		<result property="paymentOption" column="payment_option" jdbcType="CHAR"/>
+		<result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
+		<result property="receiverPhone" column="receiver_phone" jdbcType="VARCHAR"/>
+		<result property="tranCode" column="tran_status_code" jdbcType="CHAR"/>
+		<result property="tranNo" column="tran_no" jdbcType="NUMERIC"/>
+		<result property="purchasePrice" column="purchase_price" jdbcType="NUMERIC"/>
+		
+		<association property="buyer" javaType="user">
+			<result property="userId" column="user_id"/>
+			<result property="userId" column="buyer_id"/>
+		</association>
+		<association property="purchaseProd" javaType="product">
+			<result property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+		</association>
+	</resultMap>
+	
+	<resultMap id="CodeSelectMap" type="code" >
+		<result property="groupId" column="group_id" jdbcType="VARCHAR"/>
+		<result property="code" column="cd" jdbcType="CHAR"/>
+		<result property="codeName" column="nm" jdbcType="VARCHAR"/>
+	</resultMap>
+
+
+
+	<select id="findPurchase" parameterType="int" resultMap="purchaseSelectMap">
+		SELECT * 
+		FROM TRANSACTION 
+		WHERE tran_no=#{value}
+	</select>
+	
+	<select id="getPurchaseList" parameterType="hashmap" resultMap="purchaseSelectMap">	
+		SELECT * 
+		FROM ( SELECT inner_table.*, ROWNUM row_seq 
+				FROM (SELECT u.user_id,u.user_name,u.cell_phone,tr.tran_no,tr.tran_status_code 
+						FROM USERS u, TRANSACTION tr, PRODUCT pd 
+						<where>
+						u.user_id=tr.buyer_id 
+						AND pd.prod_no=tr.prod_no
+						AND u.user_id=#{buyerId}
+						<if test='searchCondition != null and searchCondition == "0"'>
+					 		AND tr.prod_no=#{search.searchKeyword}
+						</if>
+						<if test='searchCondition != null and searchCondition == "1"'>
+				 			AND pd.prod_name=#{search.searchKeyword}
+						</if>
+						<if test='searchCondition != null and searchCondition == "2"'>
+				 			AND pd.price=#{search.searchKeyword}
+						</if>
+						</where>
+						ORDER BY pd.reg_date DESC) inner_table 
+		WHERE ROWNUM &lt;= #{search.endRowNum} )
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum}
+	</select>
+	
+	<insert id="insertPurchase" parameterType="purchase">
+		INSERT INTO TRANSACTION (tran_no,PROD_NO,BUYER_ID,PAYMENT_OPTION,
+				RECEIVER_NAME,RECEIVER_PHONE,DLVY_ADDR,
+				DLVY_REQUEST,TRAN_STATUS_CODE,ORDER_DATE,DLVY_DATE,PURCHASE_PRICE) 
+				VALUES(SEQ_TRANSACTION_TRAN_NO.nextval,#{purchaseProd.prodNo:NUMERIC},#{buyer.userId:VARCHAR},#{paymentOption:VARCHAR},
+					#{receiverName:VARCHAR},#{receiverPhone:VARCHAR},#{divyAddr:VARCHAR},
+					#{divyRequest:VARCHAR},#{tranCode:CHAR},sysdate,#{divyDate:DATE},#{purchasePrice:NUMERIC})
+	</insert>
+	
+	<update id="updatePurchase" parameterType="purchase">
+		UPDATE TRANSACTION 
+		SET payment_option=#{paymentOption:CHAR},receiver_name=#{receiverName:VARCHAR}, 
+				receiver_phone=#{receiverPhone:VARCHAR},dlvy_addr=#{divyAddr:VARCHAR}, 
+				dlvy_request=#{divyRequest:VARCHAR},dlvy_date=#{divyDate:DATE} 
+		WHERE tran_no=#{tranNo}
+	</update>
+	
+	<update id="updateTranCode" parameterType="purchase">
+		UPDATE TRANSACTION SET tran_status_code=#{tranCode}
+		<where>
+			<if test="tranNo != 0">
+				tran_no=#{tranNo}
+			</if>
+			<if test="tranNo == 0 and purchaseProd.prodNo &gt;= 0">
+				prod_no=#{purchaseProd.prodNo}
+			</if>
+		</where>
+	</update>
+	
+	<select id="getgetTotalCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) 
+		FROM (SELECT u.user_id,u.user_name,u.cell_phone,tr.tran_no,tr.tran_status_code 
+						FROM USERS u, TRANSACTION tr, PRODUCT pd 
+						<where>
+						u.user_id=tr.buyer_id 
+						AND pd.prod_no=tr.prod_no
+						AND u.user_id=#{buyerId}
+						<if test='searchCondition != null and searchCondition == "0"'>
+					 		AND tr.prod_no=#{search.searchKeyword}
+						</if>
+						<if test='searchCondition != null and searchCondition == "1"'>
+				 			AND pd.prod_name=#{search.searchKeyword}
+						</if>
+						<if test='searchCondition != null and searchCondition == "2"'>
+				 			AND pd.price=#{search.searchKeyword}
+						</if>
+						</where>
+						ORDER BY pd.reg_date DESC) countTable
+	</select>
+	
+	<select id="codeCall" parameterType="String" resultMap="CodeSelectMap">
+		SELECT * FROM CODE WHERE group_id=#{value}
+	</select>
+	
+	<select id="getCountPurchase" parameterType="string" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM TRANSACTION
+		WHERE
+		buyer_id = #{value}
+		AND
+		tran_status_code IN (2,4)
+	</select>
+</mapper>

@@ -55,7 +55,6 @@
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td width="105">
-						<%-- <%=product.getProdName()%> --%>
 						${product.prodName}
 					</td>
 				</tr>
@@ -71,7 +70,6 @@
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<%-- <%=product.getProdDetail()%> --%>
 			${product.prodDetail}
 		</td>
 	</tr>
@@ -84,7 +82,6 @@
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<%-- <%=product.getManuDate()%> --%>
 			${product.manuDate}
 		</td>
 	</tr>
@@ -97,7 +94,6 @@
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<%-- <%=product.getPrice()%>&nbsp;원 --%>
 			${product.price}&nbsp;원
 		</td>
 	</tr>
@@ -108,7 +104,7 @@
 		<td width="104" class="ct_write">상품이미지</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			
+			<img 	src=  "/images/uploadFiles/${product.fileName}"/> 
 		</td>
 	</tr>
 	<tr>

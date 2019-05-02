@@ -7,13 +7,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
-	Product product=(Product)request.getAttribute("product");
+/* 	Product product=(Product)request.getAttribute("product"); */
 	
-	Cookie cookie=new Cookie("history",""+product.getProdNo());
+	/* Cookie cookie=new Cookie("history",""+product.getProdNo());
 	
 	
 	cookie.setMaxAge(60*60);
-	response.addCookie(cookie);
+	response.addCookie(cookie); */
 	
 %>
 
@@ -90,15 +90,14 @@
 	
 	<tr>
 		<td width="104" class="ct_write">
-			<!-- 상품이미지 <img 	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/> -->
-			상품이미지 
+			상품이미지 <img 	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+			
 		</td>
 			
 		<td bgcolor="D6D6D6" width="1">
 		</td>
 		<td class="ct_write01">
-		 <img 	src="${product.fileName}"/>
-			<img src = "/images/uploadFiles/../../images/empty.GIF"/>
+		<img 	src=  "/images/uploadFiles/${product.fileName}"/> 
 		</td>
 	</tr>
 	<tr>
@@ -130,16 +129,7 @@
 			</c:if>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-			<%-- <c:if test="${product.prodNo==discount.discountProd}">
-				<td class="ct_write01"><strike>${product.price}</strike>
-				&nbsp;&nbsp;
-				<fmt:parseNumber var="resultPrice" value="${product.price*0.75}" integerOnly="true"/>
-					${resultPrice}
-				</td>
-			</c:if>
-			<td class="ct_write01">${product.price}
-					${resultPrice}
-				</td> --%>
+			
 			<c:choose>
 				<c:when test="${product.prodNo==discount.discountProd || purchaseCount % 4 == 0}">
 					<td class="ct_write01"><strike>${product.price}</strike>
@@ -172,18 +162,36 @@
 
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
-			<c:if test="${empty product.proTranCode || product.proTranCode=='1' || product.proTranCode eq '5'}">
+		
+			<c:choose>
+				<c:when test="${user.userId eq 'admin'}">
+				</c:when>
+				<c:when test="${empty product.proTranCode || product.proTranCode=='1' || product.proTranCode eq '5'}">
+						<td width="17" height="23">
+						<img src="/images/ct_btnbg01.gif" width="17" height="23">
+						</td>
+						<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
+						<a href="/purchase/addPurchaseView?prod_no=${product.prodNo}">구매</a>
+						</td>
+						<td width="14" height="23">
+						<img src="/images/ct_btnbg03.gif" width="14" height="23">
+						</td>
+						<td width="30"></td>
+				</c:when>
+			</c:choose>
+			
+			<%-- <c:if test="${empty product.proTranCode || product.proTranCode=='1' || product.proTranCode eq '5'}">
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23">
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-					<a href="/product/addPurchaseView?prod_no=<%=product.getProdNo()%>">구매</a>
+					<a href="/product/addPurchaseView?prod_no=${product.prodNo}">${user.userId eq "admin" ? "":"구매"}</a>
 				</td>
 				<td width="14" height="23">
 					<img src="/images/ct_btnbg03.gif" width="14" height="23">
 				</td>
 				<td width="30"></td>
-			</c:if>
+			</c:if> --%>
 			
 				<td width="17" height="23">
 					<img src="/images/ct_btnbg01.gif" width="17" height="23">

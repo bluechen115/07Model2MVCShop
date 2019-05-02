@@ -1,20 +1,26 @@
 package com.model2.mvc.web.product;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.fileupload.DiskFileUpload;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -24,7 +30,6 @@ import com.model2.mvc.service.domain.Discount;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
-import com.model2.mvc.service.product.impl.ProductServiceImpl;
 import com.model2.mvc.service.purchase.PurchaseService;
 
 @Controller
@@ -52,12 +57,79 @@ public class ProductController {
 	int pageSize;
 	
 	@RequestMapping("addProduct")
-	public ModelAndView addProduct(@ModelAttribute("product")Product product) throws Exception{
+	public ModelAndView addProduct(HttpServletRequest request,
+									HttpServletResponse response) throws Exception{
 		System.out.println("/addProduct");
-		
-		productService.addProduct(product);
-		
 		ModelAndView modelAndView=new ModelAndView();
+		Product product=null;
+		
+		if(FileUpload.isMultipartContent(request)) {
+			String tempDir=
+					"C:\\Users\\USER\\git\\07Model2MVCShop\\07.Model2MVCShop(URI,pattern)\\WebContent\\images\\uploadFiles\\";
+			
+			DiskFileUpload fileUpload=new DiskFileUpload();
+			fileUpload.setRepositoryPath(tempDir);
+			fileUpload.setSizeMax(1024*1024*100);
+			fileUpload.setSizeThreshold(1024*1024);
+			
+			
+			if(request.getContentLength() < fileUpload.getSizeMax()) {
+				product=new Product();
+				StringTokenizer token=null;
+				
+				List fileItemList = fileUpload.parseRequest(request);
+				int Size = fileItemList.size();
+
+				for(int i = 0; i < Size; i++) {
+					FileItem fileItem=(FileItem)fileItemList.get(i);
+					
+					if(fileItem.isFormField()) {
+						if(fileItem.getFieldName().equals("manuDate")) {
+							token = new StringTokenizer(fileItem.getString("euc-kr"), "-");
+							String manuDate = token.nextToken()+token.nextToken()+token.nextToken();
+							product.setManuDate(manuDate);
+						}
+						else if(fileItem.getFieldName().equals("prodName")) {
+							product.setProdName(fileItem.getString("euc-kr"));
+						}
+						else if(fileItem.getFieldName().equals("prodDetail")) {
+							product.setProdDetail(fileItem.getString("euc-kr"));
+							}
+						else if(fileItem.getFieldName().equals("price")) {
+							product.setPrice(Integer.parseInt(fileItem.getString("euc-kr")));
+						}
+					}else { //파일형식이면..
+							if(fileItem.getSize()>0) {
+								int idx = fileItem.getName().lastIndexOf("\\");
+								if(idx == -1) {
+									idx=fileItem.getName().lastIndexOf("/");
+								}
+								String fileName = fileItem.getName().substring(idx+1);
+								product.setFileName(fileName);
+								try {
+									File uploadedFile = new File(tempDir,fileName);
+									fileItem.write(uploadedFile);
+								}catch(IOException e) {
+									System.out.println(e);
+								}
+							}else {
+								product.setFileName("../../images/empty.GIF");
+							}
+					}
+				}
+				productService.addProduct(product);
+				
+			}else {
+				int overSize = (request.getContentLength()/1000000);
+				System.out.println("<script>alert('파일 크기는 1MB까지입니다. 올리신 파일 용량은"+overSize+"MB입니다');");
+				System.out.println("history.back();</script>");
+			}
+		}else {
+			System.out.println("인코딩 타입이 multipart/form-data가 아닙니다..");
+		}
+		System.out.println("::5::");
+		
+		modelAndView.addObject("product", product);
 		modelAndView.setViewName("forward:/product/successAddProduct.jsp");
 		
 		return modelAndView;
@@ -107,9 +179,13 @@ public class ProductController {
 
 		}
 		if (cookie != null) {
-			response.addCookie(new Cookie("history", cookie.getValue() + "," + product.getProdNo()));
+			cookie = new Cookie("history", cookie.getValue() + "," + product.getProdNo());
+			cookie.setPath("/");
+			response.addCookie(cookie);
 		} else {
-			response.addCookie(new Cookie("history", String.valueOf(product.getProdNo())));
+			cookie = new Cookie("history", String.valueOf(product.getProdNo()));
+			cookie.setPath("/");
+			response.addCookie(cookie);
 		}
 		//////////////Cookie//////////////////
 		String viewName="";
@@ -121,14 +197,17 @@ public class ProductController {
 			}
 		}
 
+		
 		ModelAndView modelAndView=new ModelAndView();
 		modelAndView.setViewName(viewName);
 		modelAndView.addObject("product", product);
 		modelAndView.addObject("discount", discount);
+		modelAndView.addObject("user", user);
 		modelAndView.addObject("purchaseCount", purchaseCount);
 		
 		return modelAndView;
-	}
+	}	
+
 	
 	@RequestMapping(value="listProduct")
 	public ModelAndView getListProduct(HttpServletRequest request,
@@ -176,8 +255,10 @@ public class ProductController {
 	public ModelAndView updateProduct(@ModelAttribute("product") Product product) throws Exception{
 		
 		System.out.println("/updateProduct.do");
-		ProductService productService=new ProductServiceImpl();
-		productService.updateProduct(product);
+		
+		System.out.println("fileName :: "+product.getFileName());
+		
+		//productService.updateProduct(product);
 		
 		Map<String,Object> map=productService.getProduct(product.getProdNo());
 		product = (Product)map.get("product");
