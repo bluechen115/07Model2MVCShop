@@ -94,7 +94,7 @@
 		</where>
 	</update>
 	
-	<select id="getgetTotalCount" parameterType="hashmap" resultType="int">
+	<select id="getTotalCount" parameterType="hashmap" resultType="int">
 		SELECT COUNT(*) 
 		FROM (SELECT u.user_id,u.user_name,u.cell_phone,tr.tran_no,tr.tran_status_code 
 						FROM USERS u, TRANSACTION tr, PRODUCT pd 

@@ -64,7 +64,8 @@
 	
 	<insert id="insertProduct" parameterType="product">
 		INSERT INTO PRODUCT (prod_no,prod_name,prod_detail,manufacture_day,price,image_file,reg_date)
-		VALUES (SEQ_PRODUCT_PROD_NO.nextval,#{prodName},#{prodDetail},#{manuDate},#{price},#{fileName},sysdate)
+		VALUES (SEQ_PRODUCT_PROD_NO.nextval,#{prodName:VARCHAR},#{prodDetail:VARCHAR},#{manuDate:VARCHAR},
+				#{price:NUMERIC},#{fileName:VARCHAR},sysdate)
 	</insert>
 	
 	<update id="updateProduct" parameterType="product">
