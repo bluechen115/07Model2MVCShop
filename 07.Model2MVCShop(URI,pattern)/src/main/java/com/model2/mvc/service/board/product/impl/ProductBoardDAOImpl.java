@@ -24,17 +24,17 @@ public class ProductBoardDAOImpl implements ProductBoardDAO {
 	}
 
 	@Override
-	public void addProductBoard(ProductBoard productBoard) throws Exception {
+	public void insertProductBoard(ProductBoard productBoard) throws Exception {
 		sqlSession.insert("ProductBoardMapper.insertProductBoard", productBoard);		
 	}
 
 	@Override
-	public ProductBoard getProductBoardByBoardNo(int boardNo) throws Exception {
+	public ProductBoard selectProductBoardByBoardNo(int boardNo) throws Exception {
 		return sqlSession.selectOne("ProductBoardMapper.getProductBoard", boardNo);
 	}
 
 	@Override
-	public List<ProductBoard> getProductBoardList(Search search) throws Exception {
+	public List<ProductBoard> selectProductBoardList(Search search) throws Exception {
 		return sqlSession.selectList("ProductBoardMapper.getProductBoardList", search);
 	}
 
@@ -50,7 +50,7 @@ public class ProductBoardDAOImpl implements ProductBoardDAO {
 	}
 
 	@Override
-	public void addViewCount(int boardNo) throws Exception {
+	public void updateViewCount(int boardNo) throws Exception {
 		sqlSession.update("ProductBoardMapper.addViewCount", boardNo);
 	}
 
@@ -67,9 +67,16 @@ public class ProductBoardDAOImpl implements ProductBoardDAO {
 	}
 
 	@Override
-	public int getRandomProdBoardNo() throws Exception {
+	public int selectRandomProdBoardNo() throws Exception {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public int selectTotalCount(Search search) throws Exception {
+		return sqlSession.selectOne("ProductBoardMapper.getTotalCount", search);
+		
+	}
+
 
 }

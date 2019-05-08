@@ -8,22 +8,24 @@ import com.model2.mvc.service.domain.ProductBoard;
 
 public interface ProductBoardDAO {
 	
-	public void addProductBoard(ProductBoard productBoard) throws Exception;
+	public void insertProductBoard(ProductBoard productBoard) throws Exception;
 	
-	public ProductBoard getProductBoardByBoardNo(int boardNo) throws Exception;
+	public ProductBoard selectProductBoardByBoardNo(int boardNo) throws Exception;
 	
-	public List<ProductBoard> getProductBoardList(Search search) throws Exception;
+	public List<ProductBoard> selectProductBoardList(Search search) throws Exception;
 	
 	public void updateProductBoard(ProductBoard productBoard) throws Exception;
 	
 	public void deleteProductBoardByBoardNo(int boardNo) throws Exception;
 	
-	public void addViewCount(int boardNo) throws Exception;
+	public int selectTotalCount(Search search) throws Exception;
+	
+	public void updateViewCount(int boardNo) throws Exception;
 	
 	public Discount selectDiscountProdBoard() throws Exception;
 	
 	public void insertDiscountProdBoard(Discount discount) throws Exception;
 	
-	public int getRandomProdBoardNo() throws Exception;
+	public int selectRandomProdBoardNo() throws Exception;
 	
 }
