@@ -63,13 +63,12 @@ public class ProductController {
 	
 	@RequestMapping("addProduct")
 	public ModelAndView addProduct(@ModelAttribute("productBoard") ProductBoard productBoard,
-									@RequestParam("manuDate") String manuDate,
-									@RequestParam("price") int price) throws Exception{
+									@ModelAttribute("product")Product product) throws Exception{
 		System.out.println("/addProduct");
 		
 		
 		productService.addProduct(product);
-				
+		
 		ModelAndView modelAndView=new ModelAndView();		
 		modelAndView.addObject("product", product);
 		modelAndView.setViewName("forward:/product/successAddProduct.jsp");

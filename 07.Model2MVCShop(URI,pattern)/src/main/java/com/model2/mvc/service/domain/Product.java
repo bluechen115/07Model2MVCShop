@@ -8,12 +8,12 @@ public class Product {
 	private String fileName;
 	private String manuDate;
 	private int price;
-	private String prodDetail;
+//	private String prodDetail;
 	private String prodName;
 	private int prodNo;
-	private Date regDate;
+//	private Date regDate;
 	private String proTranCode;
-	private int viewCount;
+//	private int viewCount;
 	private int resultPrice;
 	
 	public Product(){
@@ -43,12 +43,7 @@ public class Product {
 	public void setPrice(int price) {
 		this.price = price;
 	}
-	public String getProdDetail() {
-		return prodDetail;
-	}
-	public void setProdDetail(String prodDetail) {
-		this.prodDetail = prodDetail;
-	}
+	
 	public String getProdName() {
 		return prodName;
 	}
@@ -61,20 +56,7 @@ public class Product {
 	public void setProdNo(int prodNo) {
 		this.prodNo = prodNo;
 	}
-	public Date getRegDate() {
-		return regDate;
-	}
-	public void setRegDate(Date regDate) {
-		this.regDate = regDate;
-	}
-
-	public int getViewCount() {
-		return viewCount;
-	}
-
-	public void setViewCount(int viewCount) {
-		this.viewCount = viewCount;
-	}
+	
 
 	public int getResultPrice() {
 		return resultPrice;
@@ -87,7 +69,7 @@ public class Product {
 	// Override
 	public String toString() {
 		return "ProductVO : [fileName]" + fileName
-				+ "[manuDate]" + manuDate+ "[price]" + price + "[prodDetail]" + prodDetail
+				+ "[manuDate]" + manuDate+ "[price]" + price 
 				+ "[prodName]" + prodName + "[prodNo]" + prodNo;
 	}	
 }

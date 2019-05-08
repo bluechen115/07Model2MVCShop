@@ -7,6 +7,7 @@ public class ProductBoard {
 	private String boardDetail;
 	private int quantity;
 	private String boardRegDate;
+	private int viewCount;
 	
 	
 	public ProductBoard() {
@@ -60,6 +61,16 @@ public class ProductBoard {
 
 	public void setBoardRegDate(String boardRegDate) {
 		this.boardRegDate = boardRegDate;
+	}
+
+
+	public int getViewCount() {
+		return viewCount;
+	}
+
+
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
 	}
 
 

@@ -3,7 +3,7 @@ package com.model2.mvc.service.domain;
 public class Discount {
 	
 	private String discountDate;
-	private int discountProd;
+	private int discountProdBoard;
 	
 	public String getDiscountDate() {
 		return discountDate;
@@ -12,14 +12,14 @@ public class Discount {
 		this.discountDate = discountDate;
 	}
 	public int getDiscountProd() {
-		return discountProd;
+		return discountProdBoard;
 	}
 	public void setDiscountProd(int discountProd) {
-		this.discountProd = discountProd;
+		this.discountProdBoard = discountProd;
 	}
 
 	@Override
 	public String toString() {
-		return "Discount [discountDate=" + discountDate + ", discountProd=" + discountProd + "]";
+		return "Discount [discountDate=" + discountDate + ", discountProdBoard=" + discountProdBoard + "]";
 	}
 }

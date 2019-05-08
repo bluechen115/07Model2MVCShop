@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+<mapper namespace="productBoardMapper">
+
+	<resultMap id="productBoardSelectMap" type="productBoard">
+		<result property="boardNo" column="BOARD_NO" jdbcType="NUMERIC"/>
+		<result property="title" column="TITLE" jdbcType="VARCHAR"/>
+		<result property="boardDetail" column="BOARD_DETAIL" jdbcType="VARCHAR"/>
+		<result property="quantity" column="QUANTITY" jdbcType="NUMERIC"/>
+		<result property="boardRegDate" column="BOARD_REG_DATE" jdbcType="DATE"/>
+		<result property="viewCount" column="VIEW_COUNT" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<insert id="insertProductBoard" parameterType="productBoard">
+		INSERT
+		INTO PRODUCT_BOARD
+		(BOARD_NO,
+		TITLE,
+		BOARD_DETAIL,
+		QUANTITY,
+		BOARD_REG_DATE,
+		VIEW_COUNT)
+		VALUES
+		(SEQ_PRODUCT_BOARD.nextval,
+		#{title},
+		#{boardDetail},
+		#{quantity},
+		sysdate,
+		#{viewCount})
+	</insert>
+	
+	<select id="getProductBoard" parameterType="int" resultMap="productBoardSelectMap">
+		SELECT
+		*
+		FROM PRODUCT_BOARD
+		WHERE
+		BOARD_NO = #{boardNo}
+	</select>
+	
+	<select id="getProductBoardList" parameterType="search" resultMap="productBoardSelectMap">
+		SELECT *
+		FROM(SELECT inner_table.*, ROWNUM row_seq 
+				FROM (SELECT
+						*
+						FROM PRODUCT_BOARD
+						<where>
+							<if test='searchCondition != null and searchCondition == "0"'>
+								BOARD_NO LIKE ('%' || #{searchKeyword} || '%')
+							</if>
+							<if test='searchCondition != null and searchCondition == "1"'>
+								UPPER(TITLE) LIKE UPPER('%' || #{searchKeyword} || '%')
+							</if>
+							<if test='searchCondition != null and searchCondition == "2"'>
+								UPPER(BOARD_DETAIL) LIKE UPPER('%' || #{searchKeyword} || '%')
+							</if>
+						</where>
+						) inner_table 
+				WHERE ROWNUM &lt;= #{endRowNum} )
+		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}
+	</select>
+	
+	<update id="updateProductBoard" parameterType="productBoard">
+		UPDATE
+		PRODUCT_BOARD
+		SET
+		TITLE=#{title},
+		BOARD_DETAIL = #{boardDetail}
+		WHERE
+		BOARD_NO = #{boardNo}
+	</update>
+	
+	<delete id="deleteProductBoard" parameterType="int">
+		DELETE
+		FROM PRODUCT_BOARD
+		WHERE
+		BOARD_NO = #{value}
+	</delete>
+	
+	<select id="getTotalCount" parameterType="search" resultType="int">
+		SELECT
+		COUNT(*)
+		FROM
+			(SELECT
+						*
+						FROM PRODUCT_BOARD
+						<where>
+							<if test='searchCondition != null and searchCondition == "0"'>
+								BOARD_NO LIKE ('%' || #{searchKeyword} || '%')
+							</if>
+							<if test='searchCondition != null and searchCondition == "1"'>
+								UPPER(TITLE) LIKE UPPER('%' || #{searchKeyword} || '%')
+							</if>
+							<if test='searchCondition != null and searchCondition == "2"'>
+								UPPER(BOARD_DETAIL) LIKE UPPER('%' || #{searchKeyword} || '%')
+							</if>
+						</where>
+				) countTable
+	</select>
+	
+	<update id="addViewCount" parameterType="int">
+		UPDATE PRODUCT_BOARD 
+		SET view_count=(NVL(view_count,0)+1) 
+		WHERE board_no=#{value}
+	</update>
+</mapper>

@@ -100,7 +100,7 @@
 				) countTable
 	</select>
 	
-	<select id="selectDiscountProd" resultMap="DiscountSelectMap" >
+<!-- 	<select id="selectDiscountProd" resultMap="DiscountSelectMap" >
 		SELECT discount_date, discount_prod 
 		FROM DISCOUNT WHERE to_char(sysdate,'yy/mm/dd') = discount_date
 	</select>
@@ -119,6 +119,6 @@
 				ORDER BY DBMS_RANDOM.RANDOM  
 				)  
 		WHERE ROWNUM = 1
-	</select>
+	</select> -->
 
 </mapper>

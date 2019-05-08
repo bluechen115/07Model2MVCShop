@@ -43,10 +43,10 @@ public class ProductDaoImpl implements ProductDao {
 		sqlsession.update("ProductMapper.updateProduct", product);
 	}
 
-	@Override
+/*	@Override
 	public void addViewCount(int prodNo) throws Exception {
 		sqlsession.update("ProductMapper.addViewCount", prodNo);
-	}
+	}*/
 
 
 	@Override
@@ -54,12 +54,12 @@ public class ProductDaoImpl implements ProductDao {
 		return sqlsession.selectOne("ProductMapper.getTotalCount", search);
 	}
 
-	@Override
+/*	@Override
 	public Discount selectDiscountProd() throws Exception {
 		return sqlsession.selectOne("ProductMapper.selectDiscountProd");
-	}
+	}*/
 
-	@Override
+/*	@Override
 	public void insertDiscountProd(Discount discount) throws Exception {
 		sqlsession.insert("ProductMapper.insertDiscountProd", discount);
 	}
@@ -68,5 +68,5 @@ public class ProductDaoImpl implements ProductDao {
 	public int getRandomProdNo() throws Exception {
 		return sqlsession.selectOne("ProductMapper.getRandomProdNo");
 	}
-
+*/
 }

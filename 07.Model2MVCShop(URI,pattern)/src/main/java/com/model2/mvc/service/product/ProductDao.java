@@ -18,12 +18,12 @@ public interface ProductDao {
 	
 	public int getTotalCount(Search search) throws Exception;
 	
-	public void addViewCount(int prodNo) throws Exception;
+//	public void addViewCount(int prodNo) throws Exception;
 	
-	public Discount selectDiscountProd() throws Exception;
+//	public Discount selectDiscountProd() throws Exception;
 	
-	public void insertDiscountProd(Discount discount) throws Exception;
-	
-	public int getRandomProdNo() throws Exception;
+//	public void insertDiscountProd(Discount discount) throws Exception;
+//	
+//	public int getRandomProdNo() throws Exception;
 	
 }
