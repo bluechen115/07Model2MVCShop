@@ -52,7 +52,7 @@ public class PurchaseDaoImpl implements PurchaseDao {
 
 	@Override
 	public int getgetTotalCount(Map<String, Object> map) throws Exception {
-		return sqlSession.selectOne("PurchaseMapper.getgetTotalCount", map);
+		return sqlSession.selectOne("PurchaseMapper.getTotalCount", map);
 	}
 
 	@Override

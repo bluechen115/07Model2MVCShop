@@ -1,5 +1,6 @@
 package com.model2.mvc.web.purchase;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.board.product.ProductBoardService;
 import com.model2.mvc.service.domain.Discount;
 import com.model2.mvc.service.domain.Product;
+import com.model2.mvc.service.domain.ProductBoard;
 import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
@@ -40,6 +43,10 @@ public class PurchaseController {
 	@Qualifier("purchaseServiceImpl")
 	private PurchaseService purchaseService;
 	
+	@Autowired
+	@Qualifier("productBoardServiceImpl")
+	private ProductBoardService productBoardService;
+	
 	@Value("#{commonProperties['pageUnit']}")
 	int pageUnit;
 	
@@ -53,30 +60,42 @@ public class PurchaseController {
 	@RequestMapping("addPurchase")
 	public String addPurchase(@ModelAttribute("purchase") Purchase purchase ,
 								@RequestParam("buyerId") String buyerId,
-								@RequestParam("prodNo") int prodNo,
+								@RequestParam("boardNo") int boardNo,
 								Model model) throws Exception{
 		
 		User user=userService.getUser(buyerId);
 		
-		Map<String, Object> map=productService.getProduct(prodNo);
-		Product product=(Product)map.get("product");
-		Discount discount=(Discount)map.get("discount");
+		Map<String, Object> map = productBoardService.getProductBoardByBoardNo(boardNo);
+		ProductBoard productBoard = (ProductBoard)map.get("productBoard");
+		Discount discount = (Discount)map.get("discount");
+		
+		List<Product> listProd = productService.getProductListByBoardNoInStock(boardNo);
+		
 		
 		int purchaseCount = purchaseService.getCountPurchase(user.getUserId());
-		int price=product.getPrice();
-		if(product.getProdNo()==discount.getDiscountProd()) {
-			price=(int)(product.getPrice()*0.75);
+		int price=productService.getProductByBoardNo(boardNo).getPrice();
+		if(productBoard.getBoardNo()==discount.getDiscountBoard()) {
+			price=(int)(price*0.75);
 		}
 		if(purchaseCount % 4 == 0) {
 			price=(int)(price*0.9);
 		}
 		
 		purchase.setBuyer(user);
-		purchase.setPurchaseProd(product);
 		purchase.setTranCode("2");
 		purchase.setPurchasePrice(price);
 		
-		purchaseService.addPurchase(purchase);
+		int OriginalQuantity = productBoard.getQuantity();
+		if((OriginalQuantity-purchase.getPurchaseQuantity()) >= 0){
+			for(int i=0; i<purchase.getPurchaseQuantity();i++) {
+				purchase.setPurchaseProd(listProd.get(i));
+				purchaseService.addPurchase(purchase);
+				listProd.get(i).setSaleStatus("0");
+				productService.updateProductSaleStatus(listProd.get(i));
+			}
+			productBoard.setQuantity(OriginalQuantity-purchase.getPurchaseQuantity());
+			productBoardService.modifyProductBoard(productBoard);
+		}
 		
 		model.addAttribute("purchase", purchase);
 		
@@ -86,18 +105,24 @@ public class PurchaseController {
 	@RequestMapping("addPurchaseView")
 	public String addPurchaseView(HttpSession session,
 									HttpServletRequest request,
-									@RequestParam("prod_no") int prodNo,
+									@RequestParam("boardNo") int boardNo,
 									Model model)throws Exception{
 			
 		User user=(User)session.getAttribute("user");
 		
-		Map<String, Object> map = productService.getProduct(prodNo);
-		Product product=(Product)map.get("product");
-		Discount discount=(Discount)map.get("discount");
+//		Map<String, Object> map = productService.getProduct(prodNo);
+//		Product product=(Product)map.get("product");
+//		Discount discount=(Discount)map.get("discount");
+		
+		Map<String, Object> map = productBoardService.getProductBoardByBoardNo(boardNo);
+		ProductBoard productBoard = (ProductBoard)map.get("productBoard");
+		Discount discount = (Discount)map.get("discount");
+		
+		Product product = productService.getProductByBoardNo(boardNo);
 		
 		int purchaseCount = purchaseService.getCountPurchase(user.getUserId());
 		int price=product.getPrice();
-		if(product.getProdNo()==discount.getDiscountProd()) {
+		if(productBoard.getBoardNo()==discount.getDiscountBoard()) {
 			price=(int)(product.getPrice()*0.75);
 		}
 		if(purchaseCount % 4 == 0) {
@@ -108,6 +133,7 @@ public class PurchaseController {
 		
 		model.addAttribute("user", user);
 		model.addAttribute("product", product);
+		model.addAttribute("productBoard", productBoard);
 		model.addAttribute("discount", discount);
 		model.addAttribute("purchaseCount", purchaseCount);
 		
@@ -187,11 +213,26 @@ public class PurchaseController {
 		return "forward:/purchase/updatePurchaseView.jsp";
 	}
 	
-	@RequestMapping("updateTranCode")
-	public String updateTranCode(@RequestParam("tranNo") int tranNo,
+	@RequestMapping("cancelPurchase")
+	public String cancelPurchase(@RequestParam("tranNo") int tranNo,
 									@RequestParam("tranCode") String tranCode) throws Exception{
 		
-		Purchase purchase=new Purchase();
+		Purchase purchase = purchaseService.getPurchase(tranNo);
+		
+		// 재고 복구
+		Product product = productService.getProduct(purchase.getPurchaseProd().getProdNo());
+		product.setProdNo(purchase.getPurchaseProd().getProdNo());
+		product.setSaleStatus("1"); 
+		productService.updateProductSaleStatus(product);
+		
+		// 수량 복구
+		Map<String,Object> map = productBoardService.getProductBoardByBoardNo(product.getBoardNo());
+		ProductBoard productBoard = (ProductBoard)map.get("productBoard");
+		int originQuantity = productBoard.getQuantity();
+		productBoard.setQuantity(originQuantity+1);
+		productBoardService.modifyProductBoard(productBoard);
+		
+		purchase=new Purchase();
 		purchase.setTranNo(tranNo);
 		purchase.setTranCode(tranCode);
 		

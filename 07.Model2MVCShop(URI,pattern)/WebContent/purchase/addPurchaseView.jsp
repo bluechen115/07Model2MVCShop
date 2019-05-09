@@ -6,12 +6,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 
-<%-- <%
-	User user=(User)request.getAttribute("user");
-	Product product=(Product)request.getAttribute("product");
-	
-
-%> --%>
 
 
 
@@ -58,7 +52,7 @@ function fncAddPurchase() {
 	</tr>
 </table>
 
-<input type="hidden" name="prodNo" value="${product.prodNo}" />
+<input type="hidden" name="boardNo" value="${productBoard.boardNo}" />
 
 <table width="600" border="0" cellspacing="0" cellpadding="0"	align="center" style="margin-top: 13px;">
 	<tr>
@@ -66,13 +60,13 @@ function fncAddPurchase() {
 	</tr>
 	<tr>
 		<td width="300" class="ct_write">
-			상품번호 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+			글제목 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01" width="299">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="105">${product.prodNo}</td>
+					<td width="105">${productBoard.title}</td>
 				</tr>
 			</table>
 		</td>
@@ -95,7 +89,7 @@ function fncAddPurchase() {
 			상품상세정보 <img	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${product.prodDetail}</td>
+		<td class="ct_write01">${productBoard.boardDetail}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -110,14 +104,14 @@ function fncAddPurchase() {
 	</tr>
 	<tr>
 		<td width="104" class="ct_write">가격 
-		<c:if test="${product.prodNo == discount.discountProd}">
+		<c:if test="${productBoard.boardNo == discount.discountBoard}">
 			<img src="https://static1.squarespace.com/static/513f57ebe4b0970eaf232dec/t/5654b2eae4b05e28e38285cd/1448391403995/" 
 											style="height:20px;width:20px;">
 		</c:if>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<c:choose>
-			<c:when test="${product.prodNo==discount.discountProd || purchaseCount % 4 == 0}">
+			<c:when test="${productBoard.boardNo==discount.discountBoard || purchaseCount % 4 == 0}">
 				<td class="ct_write01"><strike>${product.price}</strike>
 				&nbsp;&nbsp;
 					${product.resultPrice}
@@ -134,7 +128,7 @@ function fncAddPurchase() {
 	<tr>
 		<td width="104" class="ct_write">등록일자</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01">${product.regDate}</td>
+		<td class="ct_write01">${productBoard.boardRegDate}</td>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -144,8 +138,8 @@ function fncAddPurchase() {
 			구매자아이디 <img 	src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-		<td class="ct_write01"><%-- <%=user.getUserId()%> --%> ${user.userId}</td>
-		<input type="hidden" name="buyerId" value="${user.userId}" />
+		<td class="ct_write01">${user.userId}</td>
+		<input type="hidden" name="buyerId" value="${user.userId}"/>
 	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
@@ -158,6 +152,22 @@ function fncAddPurchase() {
 							style="width: 100px; height: 19px" maxLength="20">
 				<option value="1" selected="selected">현금구매</option>
 				<option value="2">신용구매</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	<tr>
+		<td width="104" class="ct_write">수량</td>
+		<td bgcolor="D6D6D6" width="1"></td>
+		<td class="ct_write01">
+			<select 	name="purchaseQuantity"		class="ct_input_g" 
+							style="width: 100px; height: 19px" maxLength="20">
+				<option value="0" selected="selected">==선택==</option>개
+				<c:forEach var="i" begin="1" end="${productBoard.quantity}" step="1">
+					<option value="${i}">${i}</option>
+				</c:forEach>
 			</select>
 		</td>
 	</tr>
@@ -229,7 +239,6 @@ function fncAddPurchase() {
 		<td align="center">
 			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<%-- <%if(!user.getUserId().equals("admin")){ %> --%>
 					<c:if test="${user.userId != 'admin'}">
 					<td width="17" height="23">
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
@@ -242,8 +251,7 @@ function fncAddPurchase() {
 					</td>
 					<td width="30"></td>
 					</c:if>
-					<%-- <%}%> --%>
-					
+	
 					<td width="17" height="23">
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>

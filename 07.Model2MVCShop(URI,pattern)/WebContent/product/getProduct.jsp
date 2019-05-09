@@ -179,23 +179,7 @@
 		<table border="0" cellspacing="0" cellpadding="0">
 		<tr>
 		
-			<c:choose>
-				<c:when test="${user.userId eq 'admin'}">
-				</c:when>
-				<c:when test="${empty product.proTranCode || product.proTranCode=='1' || product.proTranCode eq '5'}">
-						<td width="17" height="23">
-						<img src="/images/ct_btnbg01.gif" width="17" height="23">
-						</td>
-						<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="/purchase/addPurchaseView?prod_no=${product.prodNo}">구매</a>
-						</td>
-						<td width="14" height="23">
-						<img src="/images/ct_btnbg03.gif" width="14" height="23">
-						</td>
-						<td width="30"></td>
-				</c:when>
-			</c:choose>
-			
+
 			<c:choose>
 				<c:when test="${user.userId eq 'admin'}">
 				</c:when>
@@ -204,7 +188,7 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 						</td>
 						<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="/purchase/addPurchaseView?prod_no=${productBoard.boardNo}">구매</a>
+						<a href="/purchase/addPurchaseView?boardNo=${productBoard.boardNo}">구매</a>
 						</td>
 						<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">

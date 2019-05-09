@@ -14,9 +14,13 @@ public interface ProductDao {
 	
 	public List<Product> getProductList(Search search) throws Exception;
 	
+	public List<Product> selectProductListByBoardNoInStock(int boardNo) throws Exception;
+	
 	public void insertProduct(Product product) throws Exception;
 	
 	public void updateProduct(Product product) throws Exception;
+	
+	public void updateProductSaleStatus(Product product) throws Exception;
 	
 	public int getTotalCount(Search search) throws Exception;
 	

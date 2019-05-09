@@ -6,9 +6,9 @@ import java.sql.Date;
 public class Purchase {
 	
 	private User buyer;
-	private String divyAddr;
-	private String divyDate;
-	private String divyRequest;
+	private String receiverAddr;
+	private String receiverDate;
+	private String receiverRequest;
 	private Date orderDate;
 	private String paymentOption;
 	private Product purchaseProd;
@@ -17,6 +17,7 @@ public class Purchase {
 	private String tranCode;
 	private int tranNo;
 	private int purchasePrice;
+	private int purchaseQuantity;
 	
 	public Purchase(){
 	}
@@ -27,24 +28,31 @@ public class Purchase {
 	public void setBuyer(User buyer) {
 		this.buyer = buyer;
 	}
-	public String getDivyAddr() {
-		return divyAddr;
+	
+	public String getReceiverAddr() {
+		return receiverAddr;
 	}
-	public void setDivyAddr(String divyAddr) {
-		this.divyAddr = divyAddr;
+
+	public void setReceiverAddr(String receiverAddr) {
+		this.receiverAddr = receiverAddr;
 	}
-	public String getDivyDate() {
-		return divyDate;
+
+	public String getReceiverDate() {
+		return receiverDate;
 	}
-	public void setDivyDate(String divyDate) {
-		this.divyDate = divyDate;
+
+	public void setReceiverDate(String receiverDate) {
+		this.receiverDate = receiverDate;
 	}
-	public String getDivyRequest() {
-		return divyRequest;
+
+	public String getReceiverRequest() {
+		return receiverRequest;
 	}
-	public void setDivyRequest(String divyRequest) {
-		this.divyRequest = divyRequest;
+
+	public void setReceiverRequest(String receiverRequest) {
+		this.receiverRequest = receiverRequest;
 	}
+
 	public Date getOrderDate() {
 		return orderDate;
 	}
@@ -96,14 +104,23 @@ public class Purchase {
 		this.purchasePrice = purchasePrice;
 	}
 
+	public int getPurchaseQuantity() {
+		return purchaseQuantity;
+	}
+
+	public void setPurchaseQuantity(int purchaseQuantity) {
+		this.purchaseQuantity = purchaseQuantity;
+	}
+
 	@Override
 	public String toString() {
-		return "Purchase [buyer=" + buyer + ", divyAddr=" + divyAddr
-				+ ", divyDate=" + divyDate + ", divyRequest=" + divyRequest
-				+ ", orderDate=" + orderDate + ", paymentOption="
-				+ paymentOption + ", purchaseProd=" + purchaseProd
-				+ ", receiverName=" + receiverName + ", receiverPhone="
-				+ receiverPhone + ", tranCode=" + tranCode + ", tranNo="
-				+ tranNo + "]";
+		return "Purchase [buyer=" + buyer + ", receiverAddr=" + receiverAddr + ", receiverDate=" + receiverDate
+				+ ", receiverRequest=" + receiverRequest + ", orderDate=" + orderDate + ", paymentOption="
+				+ paymentOption + ", purchaseProd=" + purchaseProd + ", receiverName=" + receiverName
+				+ ", receiverPhone=" + receiverPhone + ", tranCode=" + tranCode + ", tranNo=" + tranNo
+				+ ", purchasePrice=" + purchasePrice + ", purchaseQuantity=" + purchaseQuantity + "]";
 	}
+
+	
+	
 }

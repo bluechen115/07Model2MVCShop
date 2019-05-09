@@ -15,7 +15,7 @@
 		<result property="prodNo" column="prod_no" jdbcType="VARCHAR"/>
 		<result property="regDate" column="reg_date" jdbcType="DATE"/>
 		<result property="proTranCode" column="tran_status_code" jdbcType="CHAR"/>
-		<result property="viewCount" column="view_count" jdbcType="NUMERIC"/>
+		<result property="boardNo" column="board_no" jdbcType="NUMERIC"/>
 		<result property="saleStatus" column="sale_status" jdbcType="CHAR"/>
 	</resultMap>
 	
@@ -73,6 +73,15 @@
 		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}
 	</select>
 	
+	<select id="getProductListByBoardNoInStock" parameterType="int" resultMap="productSelectMap">
+		SELECT
+		*
+		FROM PRODUCT
+		WHERE
+		BOARD_NO = #{value}
+		AND SALE_STATUS IN ('1')
+	</select>
+	
 	<insert id="insertProduct" parameterType="product">
 		INSERT 
 		INTO PRODUCT 
@@ -101,6 +110,13 @@
 		price=#{price:NUMERIC},
 		image_file=#{fileName} 
 		WHERE board_no=#{boardNo}
+	</update>
+	
+	<update id="updateProductSaleStatus" parameterType="product">
+		UPDATE PRODUCT 
+		SET
+		SALE_STATUS = #{saleStatus}
+		WHERE prod_no = #{prodNo}
 	</update>
 	
 	<update id="addViewCount" parameterType="int">

@@ -59,6 +59,16 @@ public class ProductDaoImpl implements ProductDao {
 		return sqlsession.selectOne("ProductMapper.getTotalCount", search);
 	}
 
+	@Override
+	public List<Product> selectProductListByBoardNoInStock(int boardNo) throws Exception {
+		return sqlsession.selectList("ProductMapper.getProductListByBoardNoInStock", boardNo);
+	}
+
+	@Override
+	public void updateProductSaleStatus(Product product) throws Exception {
+		sqlsession.update("ProductMapper.updateProductSaleStatus", product);		
+	}
+
 
 /*	@Override
 	public Discount selectDiscountProd() throws Exception {

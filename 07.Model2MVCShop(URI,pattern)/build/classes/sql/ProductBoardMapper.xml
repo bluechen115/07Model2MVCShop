@@ -89,7 +89,8 @@
 		PRODUCT_BOARD
 		SET
 		TITLE=#{title:VARCHAR},
-		BOARD_DETAIL = #{boardDetail:VARCHAR}
+		BOARD_DETAIL = #{boardDetail:VARCHAR},
+		QUANTITY = #{quantity:NUMERIC} 
 		WHERE
 		BOARD_NO = #{boardNo}
 	</update>

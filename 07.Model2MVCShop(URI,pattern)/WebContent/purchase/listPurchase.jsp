@@ -3,20 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%-- <%
-	Map<String,Object> map=(HashMap<String,Object>)request.getAttribute("map");
-	Search search=(Search)request.getAttribute("search");
-	Page resultPage=(Page)request.getAttribute("resultPage");
-	
-
-	List<User> userList=(ArrayList<User>)map.get("userList");
-	List<Purchase> purchaseList=(ArrayList<Purchase>)map.get("purchaseList");
-	
-	String searchCondition=CommonUtil.null2str(search.getSearchCondition());
-	String searchKeyword=CommonUtil.null2str(search.getSearchKeyword());
-	
-%> --%>
-
 <html>
 <head>
 <title>구매 목록조회</title>
@@ -69,6 +55,10 @@
 				<tr>
 					<td class="ct_list_b" width="100">No</td>
 					<td class="ct_line02"></td>
+					<td class="ct_list_b" width="150">상품번호</td>
+					<td class="ct_line02"></td>
+					<td class="ct_list_b" width="150">상품명</td>
+					<td class="ct_line02"></td>
 					<td class="ct_list_b" width="150">회원ID</td>
 					<td class="ct_line02"></td>
 					<td class="ct_list_b" width="150">회원명</td>
@@ -91,6 +81,10 @@
 						<td align="center">
 							<a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">${i+1}</a>
 						</td>
+						<td></td>
+						<td align="left">${purchase.purchaseProd.prodNo}</td>
+						<td></td>
+						<td align="left">${purchase.purchaseProd.prodName}</td>
 						<td></td>
 						<td align="left">
 							<a href="/user/getUser?userId=${user.userId}">${user.userId}</a>
@@ -117,7 +111,7 @@
 								<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=4">물건도착</a>
 							</c:if>
 							<c:if test="${purchase.tranCode=='2'}">
-								<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=5">구매취소</a>
+								<a href="/purchase/cancelPurchase?tranNo=${purchase.tranNo}&tranCode=5">구매취소</a>
 							</c:if>
 						</td>
 					</tr>

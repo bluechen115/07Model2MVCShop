@@ -24,6 +24,7 @@
 		</association>
 		<association property="purchaseProd" javaType="product">
 			<result property="prodNo" column="prod_no" jdbcType="NUMERIC"/>
+			<result property="prodName" column="prod_name" jdbcType="VARCHAR"/>
 		</association>
 	</resultMap>
 	
@@ -44,7 +45,7 @@
 	<select id="getPurchaseList" parameterType="hashmap" resultMap="purchaseSelectMap">	
 		SELECT * 
 		FROM ( SELECT inner_table.*, ROWNUM row_seq 
-				FROM (SELECT u.user_id,u.user_name,u.cell_phone,tr.tran_no,tr.tran_status_code 
+				FROM (SELECT u.user_id,u.user_name,u.cell_phone,tr.tran_no,tr.tran_status_code,pd.prod_no,pd.prod_name 
 						FROM USERS u, TRANSACTION tr, PRODUCT pd 
 						<where>
 						u.user_id=tr.buyer_id 

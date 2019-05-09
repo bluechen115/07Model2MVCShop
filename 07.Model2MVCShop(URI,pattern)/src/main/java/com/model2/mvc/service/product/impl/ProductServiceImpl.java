@@ -1,6 +1,7 @@
 package com.model2.mvc.service.product.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +26,13 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void addProduct(Product product) throws Exception {
+		product.setSaleStatus("1"); // 재고있음으로 세팅
 		productDao.insertProduct(product);
 	}
 
 	@Override
-	public Map<String, Object> getProduct(int prodNo) throws Exception {
-		Map<String, Object> map=new HashMap<String,Object>();
-		map.put("product", productDao.findProduct(prodNo));
-		return map;
+	public Product getProduct(int prodNo) throws Exception {
+		return productDao.findProduct(prodNo);
 	}
 
 	@Override
@@ -54,6 +54,16 @@ public class ProductServiceImpl implements ProductService {
 		String manuDate = product.getManuDate().replaceAll("-", "");
 		product.setManuDate(manuDate);
 		productDao.updateProduct(product);
+	}
+
+	@Override
+	public List<Product> getProductListByBoardNoInStock(int boardNo) throws Exception {
+		return productDao.selectProductListByBoardNoInStock(boardNo);
+	}
+
+	@Override
+	public void updateProductSaleStatus(Product product) throws Exception {
+		productDao.updateProductSaleStatus(product);
 	}
 
 
