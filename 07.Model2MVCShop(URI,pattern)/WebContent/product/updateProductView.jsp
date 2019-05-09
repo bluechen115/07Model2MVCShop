@@ -1,11 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--     
-<%
-	Product product=(Product)request.getAttribute("product");
 
-%> --%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
@@ -24,7 +20,7 @@
 function fncAddProduct(){
 	//Form 유효성 검증
  	var name = document.detailForm.prodName.value;
-	var detail = document.detailForm.prodDetail.value;
+	var detail = document.detailForm.boardDetail.value;
 	var manuDate = document.detailForm.manuDate.value;
 	var price = document.detailForm.price.value;
 
@@ -56,7 +52,7 @@ function fncAddProduct(){
 
 <form name="detailForm" method="post" action="/product/updateProduct">
 
-<input type="hidden" name="prodNo" value="${product.prodNo}"/>
+<input type="hidden" name="boardNo" value="${productBoard.boardNo}"/>
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -78,6 +74,26 @@ function fncAddProduct(){
 </table>
 
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 13px;">
+<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	<tr>
+		<td width="104" class="ct_write">
+			글제목 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+		</td>
+		<td bgcolor="D6D6D6" width="1"></td>
+		<td class="ct_write01">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="105">
+						<input 	type="text" name="title" class="ct_input_g" 
+										style="width: 100px; height: 19px" maxLength="20" 
+										value="${productBoard.title}">
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
 	<tr>
 		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
 	</tr>
@@ -107,7 +123,7 @@ function fncAddProduct(){
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
 		<td class="ct_write01">
-			<input type="text" name="prodDetail" value="${product.prodDetail}" class="ct_input_g" 
+			<input type="text" name="boardDetail" value="${productBoard.boardDetail}" class="ct_input_g" 
 						style="width: 100px; height: 19px" maxLength="10"	minLength="6">
 		</td>
 	</tr>
@@ -124,6 +140,19 @@ function fncAddProduct(){
 						class="ct_input_g" style="width: 100px; height: 19px" maxLength="10" minLength="6">&nbsp;
 						<img 	src="../images/ct_icon_date.gif" width="15" height="15" 
 									onclick="show_calendar('document.detailForm.manuDate', document.detailForm.manuDate.value)" />
+		</td>
+	</tr>
+	<tr>
+		<td height="1" colspan="3" bgcolor="D6D6D6"></td>
+	</tr>
+	<tr>
+		<td width="104" class="ct_write">
+			수량 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle"/>
+		</td>
+		<td bgcolor="D6D6D6" width="1"></td>
+		<td class="ct_write01">
+			<input type="text" name="quantity" value="${productBoard.quantity}"
+						class="ct_input_g" style="width: 100px; height: 19px" maxLength="50"/>&nbsp;개
 		</td>
 	</tr>
 	<tr>
@@ -173,7 +202,7 @@ function fncAddProduct(){
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
 					</td>
-					<%-- <%}%> --%>
+					
 					</c:if>
 					
 					<td width="30"></td>

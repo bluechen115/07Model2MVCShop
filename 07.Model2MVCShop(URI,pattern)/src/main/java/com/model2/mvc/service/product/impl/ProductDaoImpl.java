@@ -28,6 +28,11 @@ public class ProductDaoImpl implements ProductDao {
 	}
 
 	@Override
+	public Product findProductByBoardNo(int boardNo) throws Exception {
+		return sqlsession.selectOne("ProductMapper.findProductByBoardNo", boardNo);
+	}
+	
+	@Override
 	public List<Product> getProductList(Search search) throws Exception {
 		return sqlsession.selectList("ProductMapper.getProductList", search);
 	}
@@ -53,6 +58,7 @@ public class ProductDaoImpl implements ProductDao {
 	public int getTotalCount(Search search) throws Exception {
 		return sqlsession.selectOne("ProductMapper.getTotalCount", search);
 	}
+
 
 /*	@Override
 	public Discount selectDiscountProd() throws Exception {

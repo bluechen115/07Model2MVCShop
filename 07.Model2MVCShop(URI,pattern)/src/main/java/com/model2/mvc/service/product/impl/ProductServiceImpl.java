@@ -32,36 +32,34 @@ public class ProductServiceImpl implements ProductService {
 	public Map<String, Object> getProduct(int prodNo) throws Exception {
 		Map<String, Object> map=new HashMap<String,Object>();
 		map.put("product", productDao.findProduct(prodNo));
-		map.put("discount", productDao.selectDiscountProd());
 		return map;
 	}
 
+	@Override
+	public Product getProductByBoardNo(int boardNo) throws Exception {
+		return productDao.findProductByBoardNo(boardNo);
+	}
+	
 	@Override
 	public Map<String, Object> getProductList(Search search) throws Exception {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("list", productDao.getProductList(search));
 		map.put("totalCount", productDao.getTotalCount(search));
 		
-		Discount discount=productDao.selectDiscountProd();
-		if(discount==null) {
-			int discountProd=productDao.getRandomProdNo();
-			discount=new Discount();
-			discount.setDiscountProd(discountProd);
-			productDao.insertDiscountProd(discount);
-		}
-		map.put("discount", discount);
-		
 		return map;
 	}
 
 	@Override
 	public void updateProduct(Product product) throws Exception {
+		String manuDate = product.getManuDate().replaceAll("-", "");
+		product.setManuDate(manuDate);
 		productDao.updateProduct(product);
 	}
 
-	@Override
+
+	/*@Override
 	public void plusViewCount(int prodNo) throws Exception {
 		productDao.addViewCount(prodNo);
-	}
+	}*/
 
 }

@@ -13,6 +13,12 @@
 		<result property="quantity" column="QUANTITY" jdbcType="NUMERIC"/>
 		<result property="boardRegDate" column="BOARD_REG_DATE" jdbcType="DATE"/>
 		<result property="viewCount" column="VIEW_COUNT" jdbcType="NUMERIC"/>
+		<result property="prodPrice" column="price" jdbcType="NUMERIC"/>
+	</resultMap>
+	
+	<resultMap id="DiscountSelectMap" type="discount">
+		<result property="discountDate" column="discount_date" jdbcType="VARCHAR"/>
+		<result property="discountBoard" column="discount_board" jdbcType="NUMERIC"/>
 	</resultMap>
 	
 	<insert id="insertProductBoard" parameterType="productBoard">
@@ -45,19 +51,34 @@
 		SELECT *
 		FROM(SELECT inner_table.*, ROWNUM row_seq 
 				FROM (SELECT
-						*
-						FROM PRODUCT_BOARD
+						pb.*,p.price
+						FROM PRODUCT_BOARD pb, (SELECT
+												DISTINCT
+												board_no,price
+												FROM
+												PRODUCT
+												WHERE BOARD_NO IS NOT NULL) p
 						<where>
+							 pb.board_no = p.board_no 
 							<if test='searchCondition != null and searchCondition == "0"'>
-								BOARD_NO LIKE ('%' || #{searchKeyword} || '%')
+								AND pb.BOARD_NO LIKE ('%' || #{searchKeyword} || '%')
 							</if>
 							<if test='searchCondition != null and searchCondition == "1"'>
-								UPPER(TITLE) LIKE UPPER('%' || #{searchKeyword} || '%')
+								AND UPPER(pb.TITLE) LIKE UPPER('%' || #{searchKeyword} || '%')
 							</if>
 							<if test='searchCondition != null and searchCondition == "2"'>
-								UPPER(BOARD_DETAIL) LIKE UPPER('%' || #{searchKeyword} || '%')
+								AND UPPER(pb.BOARD_DETAIL) LIKE UPPER('%' || #{searchKeyword} || '%')
 							</if>
 						</where>
+						<if test='orderType != null and orderType == "1"'>
+							ORDER BY pb.board_reg_date DESC
+						</if>
+						<if test='orderType != null and orderType == "2"'>
+							ORDER BY p.price DESC
+						</if>
+						<if test='orderType != null and orderType == "3"'>
+							ORDER BY p.price ASC
+						</if>
 						) inner_table 
 				WHERE ROWNUM &lt;= #{endRowNum} )
 		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}
@@ -67,8 +88,8 @@
 		UPDATE
 		PRODUCT_BOARD
 		SET
-		TITLE=#{title},
-		BOARD_DETAIL = #{boardDetail}
+		TITLE=#{title:VARCHAR},
+		BOARD_DETAIL = #{boardDetail:VARCHAR}
 		WHERE
 		BOARD_NO = #{boardNo}
 	</update>
@@ -85,17 +106,23 @@
 		COUNT(*)
 		FROM
 			(SELECT
-						*
-						FROM PRODUCT_BOARD
+						pb.*,p.price
+						FROM PRODUCT_BOARD pb, (SELECT
+												DISTINCT
+												board_no,price
+												FROM
+												PRODUCT
+												WHERE BOARD_NO IS NOT NULL) p
 						<where>
+							 pb.board_no = p.board_no
 							<if test='searchCondition != null and searchCondition == "0"'>
-								BOARD_NO LIKE ('%' || #{searchKeyword} || '%')
+								AND pb.BOARD_NO LIKE ('%' || #{searchKeyword} || '%')
 							</if>
 							<if test='searchCondition != null and searchCondition == "1"'>
-								UPPER(TITLE) LIKE UPPER('%' || #{searchKeyword} || '%')
+								AND UPPER(pb.TITLE) LIKE UPPER('%' || #{searchKeyword} || '%')
 							</if>
 							<if test='searchCondition != null and searchCondition == "2"'>
-								UPPER(BOARD_DETAIL) LIKE UPPER('%' || #{searchKeyword} || '%')
+								AND UPPER(pb.BOARD_DETAIL) LIKE UPPER('%' || #{searchKeyword} || '%')
 							</if>
 						</where>
 				) countTable
@@ -106,4 +133,27 @@
 		SET view_count=(NVL(view_count,0)+1) 
 		WHERE board_no=#{value}
 	</update>
+	
+	<select id="selectDiscountProdBoard" resultMap="DiscountSelectMap" >
+		SELECT discount_date, discount_board 
+		FROM DISCOUNT WHERE to_char(sysdate,'yy/mm/dd') = discount_date
+	</select>
+	
+	<insert id="insertDiscountProdBoard" parameterType="discount">
+		INSERT INTO DISCOUNT 
+		(discount_date,discount_board ) 
+		VALUES (sysdate,#{discountBoard})
+	</insert>
+	
+	<select id="getRandomProdBoardNo" resultType="int">
+		SELECT 
+		BOARD_NO FROM( 
+				SELECT *
+				FROM PRODUCT_BOARD 
+				WHERE 
+				QUANTITY &gt; 0  
+				ORDER BY DBMS_RANDOM.RANDOM  
+				)  
+		WHERE ROWNUM = 1
+	</select>
 </mapper>

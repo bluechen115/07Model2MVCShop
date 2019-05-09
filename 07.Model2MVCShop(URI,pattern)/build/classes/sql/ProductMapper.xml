@@ -16,6 +16,7 @@
 		<result property="regDate" column="reg_date" jdbcType="DATE"/>
 		<result property="proTranCode" column="tran_status_code" jdbcType="CHAR"/>
 		<result property="viewCount" column="view_count" jdbcType="NUMERIC"/>
+		<result property="saleStatus" column="sale_status" jdbcType="CHAR"/>
 	</resultMap>
 	
 	<resultMap id="DiscountSelectMap" type="discount">
@@ -27,6 +28,16 @@
 		SELECT p.*,tr.tran_status_code 
 		FROM PRODUCT p, TRANSACTION tr 
 		WHERE p.prod_no=tr.prod_no(+) AND p.prod_no=#{value}
+	</select>
+	
+	<select id="findProductByBoardNo" parameterType="int" resultMap="productSelectMap">
+		SELECT ROWNUM,vt.*
+		FROM (SELECT
+				*
+				FROM PRODUCT
+				WHERE
+				BOARD_NO = #{value}) vt
+		WHERE ROWNUM = 1
 	</select>
 	
 	<select id="getProductList" parameterType="search" resultMap="productSelectMap">
@@ -63,16 +74,33 @@
 	</select>
 	
 	<insert id="insertProduct" parameterType="product">
-		INSERT INTO PRODUCT (prod_no,prod_name,prod_detail,manufacture_day,price,image_file,reg_date)
-		VALUES (SEQ_PRODUCT_PROD_NO.nextval,#{prodName:VARCHAR},#{prodDetail:VARCHAR},#{manuDate:VARCHAR},
-				#{price:NUMERIC},#{fileName:VARCHAR},sysdate)
+		INSERT 
+		INTO PRODUCT 
+		(prod_no,
+		prod_name,
+		manufacture_day,
+		price,
+		image_file,
+		board_no,
+		sale_status)
+		
+		VALUES 
+		(SEQ_PRODUCT_PROD_NO.nextval,
+		#{prodName:VARCHAR},
+		#{manuDate:VARCHAR},
+		#{price:NUMERIC},
+		#{fileName:VARCHAR},
+		SEQ_PRODUCT_BOARD.currval,
+		#{saleStatus:CHAR})
 	</insert>
 	
 	<update id="updateProduct" parameterType="product">
 		UPDATE PRODUCT 
-		SET prod_name=#{prodName},prod_detail=#{prodDetail},manufacture_day=#{manuDate},
-			price=#{price},image_file=#{fileName} 
-		WHERE prod_no=#{prodNo}
+		SET prod_name=#{prodName:VARCHAR},
+		manufacture_day=#{manuDate:VARCHAR},
+		price=#{price:NUMERIC},
+		image_file=#{fileName} 
+		WHERE board_no=#{boardNo}
 	</update>
 	
 	<update id="addViewCount" parameterType="int">
@@ -99,26 +127,5 @@
 				</where>
 				) countTable
 	</select>
-	
-<!-- 	<select id="selectDiscountProd" resultMap="DiscountSelectMap" >
-		SELECT discount_date, discount_prod 
-		FROM DISCOUNT WHERE to_char(sysdate,'yy/mm/dd') = discount_date
-	</select>
-	
-	<insert id="insertDiscountProd" parameterType="discount">
-		INSERT INTO DISCOUNT 
-		(discount_date,discount_prod) 
-		VALUES (sysdate,#{discountProd})
-	</insert>
-	
-	<select id="getRandomProdNo" resultType="int">
-		SELECT prod_no FROM( 
-				SELECT p.*, tr.tran_status_code FROM product p,transaction tr 
-				WHERE p.prod_no=tr.prod_no(+)  
-				AND tr.tran_status_code IS NULL  
-				ORDER BY DBMS_RANDOM.RANDOM  
-				)  
-		WHERE ROWNUM = 1
-	</select> -->
 
 </mapper>

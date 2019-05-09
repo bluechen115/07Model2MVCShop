@@ -70,8 +70,8 @@ function fncSortingByUser(pageSize){
 <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;">
 	<tr>
 		<td>
-			<a href="/product/getProduct?prodNo=
-				${discount.discountProd}
+			<a href="/product/getProduct?boardNo=
+				${discount.discountBoard}
 				&menu=
 				<c:if test="${param.menu=='search'}">
 				search
@@ -95,11 +95,11 @@ function fncSortingByUser(pageSize){
 				<c:if test="${!empty search.searchCondition}">
 				<c:choose>
 					<c:when test="${sessionScope.user.userId == 'admin'}">					
-					<option value="0" ${!empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>상품번호</option>
+					<option value="0" ${!empty search.searchCondition && search.searchCondition==0 ? "selected" : "" }>글번호</option>
 					</c:when>					
 				</c:choose>
-					<option value="1" ${!empty search.searchCondition && search.searchCondition==1 ? "selected":""}>상품명</option>
-					<option value="2" ${!empty search.searchCondition && search.searchCondition==2 ? "selected":""}>상품가격</option>
+					<option value="1" ${!empty search.searchCondition && search.searchCondition==1 ? "selected":""}>글제목</option>
+					<option value="2" ${!empty search.searchCondition && search.searchCondition==2 ? "selected":""}>글내용</option>
 				</c:if>
 			
 				<c:if test="${empty search.searchCondition}">
@@ -108,16 +108,13 @@ function fncSortingByUser(pageSize){
 					<option value="" >--선택--</option>
 					</c:when>
 				</c:choose>
-					<option value="0" >상품번호</option>
-					<option value="1" >상품명</option>
-					<option value="2" >상품가격</option>
+					<option value="0" >글번호</option>
+					<option value="1" >글제목</option>
+					<option value="2" >글내용</option>
 				</c:if>
 			</select>
 			<input type="text" id="searchKeyword" name="searchKeyword"  class="ct_input_g" style="width:200px; height:19px" 
 				value="${!empty search.searchKeyword ? search.searchKeyword:''}"
-				<%-- <c:if test="${!empty search.searchKeyword }">
-					value="${search.searchKeyword}"
-				</c:if> --%>
 			/>
 		</td>
 	
@@ -148,7 +145,7 @@ function fncSortingByUser(pageSize){
 	<tr>
 		<td class="ct_list_b" width="100">No</td>
 		<td class="ct_line02"></td>
-		<td class="ct_list_b" width="150">상품명</td>
+		<td class="ct_list_b" width="150">제목</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">가격</td>
 		<td class="ct_line02"></td>
@@ -161,15 +158,15 @@ function fncSortingByUser(pageSize){
 	</tr>
 	
 	<c:set var="i" value="0"/>
-	<c:forEach var="product" items="${list}" >
+	<c:forEach var="productBoard" items="${list}" >
 	<c:set var="i" value="${i+1}"/>
 	<tr class="ct_list_pop">
 		<td align="center">${i}</td>
 		<td></td>
 				
 				<td align="left">
-				<a href="/product/getProduct?prodNo=
-				${product.prodNo}
+				<a href="/product/getProduct?boardNo=
+				${productBoard.boardNo}
 				&menu=
 				<c:if test="${param.menu=='search'}">
 				search
@@ -177,21 +174,21 @@ function fncSortingByUser(pageSize){
 				<c:if test="${param.menu=='manage'}">
 				manage
 				</c:if>">
-				${product.prodName}</a></td>
+				${productBoard.title}</a></td>
 		<td></td>
-		<td align="left">${product.price}
-			<c:if test="${product.prodNo == discount.discountProd}">
+		<td align="left">${productBoard.prodPrice}
+			<c:if test="${productBoard.boardNo == discount.discountBoard}">
 			<img src="https://static1.squarespace.com/static/513f57ebe4b0970eaf232dec/t/5654b2eae4b05e28e38285cd/1448391403995/" 
 											style="height:20px;width:20px;">
 			</c:if>
 		</td>
 		<td></td>
-		<td align="left">${product.regDate}</td>
+		<td align="left">${productBoard.boardRegDate}</td>
 		<td></td>
 		<td align="left">
 		
 			
-			<c:if test="${empty product.proTranCode || product.proTranCode=='1' || product.proTranCode eq '5'}">
+<%-- 			<c:if test="${empty product.proTranCode || product.proTranCode=='1' || product.proTranCode eq '5'}">
 			판매중
 			</c:if>
 			<c:if test="${product.proTranCode=='2'}">
@@ -207,7 +204,9 @@ function fncSortingByUser(pageSize){
 			</c:if>
 			<c:if test="${product.proTranCode=='4'}">
 			재고없음
-			</c:if>
+			</c:if> --%>
+			
+			${productBoard.quantity > 0 ? '판매중':'재고없음'}
 		
 		</td>	
 	</tr>

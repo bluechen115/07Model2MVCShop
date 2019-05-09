@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.model2.mvc.common.Page;
 import com.model2.mvc.common.Search;
+import com.model2.mvc.service.board.product.ProductBoardService;
 import com.model2.mvc.service.domain.Discount;
 import com.model2.mvc.service.domain.Product;
 import com.model2.mvc.service.domain.ProductBoard;
@@ -48,6 +49,10 @@ public class ProductController {
 	@Autowired
 	@Qualifier("purchaseServiceImpl")
 	private PurchaseService purchaseService;
+	
+	@Autowired
+	@Qualifier("productBoardServiceImpl")
+	private ProductBoardService productBoardService;
 
 	public ProductController() {
 		System.out.println(this.getClass());
@@ -65,19 +70,28 @@ public class ProductController {
 	public ModelAndView addProduct(@ModelAttribute("productBoard") ProductBoard productBoard,
 									@ModelAttribute("product")Product product) throws Exception{
 		System.out.println("/addProduct");
+
+		productBoardService.addProductBoard(productBoard);
 		
+		String manuDate = product.getManuDate().replaceAll("-", "");
+		product.setManuDate(manuDate);
 		
-		productService.addProduct(product);
+		for(int i=0;i<productBoard.getQuantity();i++) {
+			productService.addProduct(product);			
+		}
+		
 		
 		ModelAndView modelAndView=new ModelAndView();		
 		modelAndView.addObject("product", product);
+		modelAndView.addObject("productBoard", productBoard);
+		
 		modelAndView.setViewName("forward:/product/successAddProduct.jsp");
 		
 		return modelAndView;
 	}
 	
 	@RequestMapping("getProduct")
-	public ModelAndView getProduct(@RequestParam("prodNo") int prodNo,
+	public ModelAndView getProduct(@RequestParam("boardNo") int boardNo,
 								@RequestParam("menu") String menu,
 								HttpServletRequest request,
 								HttpServletResponse response,
@@ -88,16 +102,18 @@ public class ProductController {
 		User user=(User)session.getAttribute("user");
 		
 		if(menu.equals("search")) {
-			productService.plusViewCount(prodNo);
+			productBoardService.addViewCount(boardNo);
 		}
 		
-		Map<String,Object> map=productService.getProduct(prodNo);
-		Product product = (Product)map.get("product");
+		Map<String,Object> map = productBoardService.getProductBoardByBoardNo(boardNo);
+		ProductBoard productBoard = (ProductBoard)map.get("productBoard");
 		Discount discount = (Discount)map.get("discount");
+		
+		Product product = productService.getProductByBoardNo(boardNo);
 		
 		int purchaseCount = purchaseService.getCountPurchase(user.getUserId());
 		int price=product.getPrice();
-		if(product.getProdNo()==discount.getDiscountProd()) {
+		if(productBoard.getBoardNo()==discount.getDiscountBoard()) {
 			price=(int)(product.getPrice()*0.75);
 		}
 		if(purchaseCount % 4 == 0) {
@@ -141,6 +157,7 @@ public class ProductController {
 		
 		ModelAndView modelAndView=new ModelAndView();
 		modelAndView.setViewName(viewName);
+		modelAndView.addObject("productBoard", productBoard);
 		modelAndView.addObject("product", product);
 		modelAndView.addObject("discount", discount);
 		modelAndView.addObject("user", user);
@@ -177,7 +194,8 @@ public class ProductController {
 		
 		search.setPageSize(page.getPageSize());
 		
-		Map<String,Object> map=productService.getProductList(search);
+//		Map<String,Object> map=productService.getProductList(search);
+		Map<String,Object> map = productBoardService.getProductBoardList(search);
 		
 		Page resultPage=new Page(search.getCurrentPage(),((Integer)map.get("totalCount")).intValue(), page.getPageUnit(), page.getPageSize());
 
@@ -193,19 +211,33 @@ public class ProductController {
 	}
 	
 	@RequestMapping("updateProduct")
-	public ModelAndView updateProduct(@ModelAttribute("product") Product product) throws Exception{
+	public ModelAndView updateProduct(@ModelAttribute("product") Product product,
+										@ModelAttribute("productBoard")ProductBoard productBoard,
+										HttpSession session
+										) throws Exception{
 		
 		System.out.println("/updateProduct.do");
 		
 		System.out.println("fileName :: "+product.getFileName());
 		
-		//productService.updateProduct(product);
+		productBoardService.modifyProductBoard(productBoard);
+		productService.updateProduct(product);
 		
-		Map<String,Object> map=productService.getProduct(product.getProdNo());
-		product = (Product)map.get("product");
+		product =  productService.getProductByBoardNo(productBoard.getBoardNo());
+		
+		Map<String,Object> mapProdBoard = productBoardService.getProductBoardByBoardNo(productBoard.getBoardNo());
+		productBoard = (ProductBoard)mapProdBoard.get("productBoard");
+		Discount discount = (Discount)mapProdBoard.get("discount");
+		
+		User user = (User)session.getAttribute("user");
 		
 		ModelAndView modelAndView=new ModelAndView();
 		modelAndView.setViewName("forward:/product/getProduct.jsp");
+		modelAndView.addObject("productBoard", productBoard);
+		modelAndView.addObject("product", product);
+		modelAndView.addObject("discount", discount);
+		modelAndView.addObject("user", user);
+		modelAndView.addObject("purchaseCount", purchaseService.getCountPurchase(user.getUserId()));
 		
 		return modelAndView;
 	}

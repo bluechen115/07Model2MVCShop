@@ -56,20 +56,17 @@ public class ProductBoardDAOImpl implements ProductBoardDAO {
 
 	@Override
 	public Discount selectDiscountProdBoard() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return sqlSession.selectOne("ProductBoardMapper.selectDiscountProdBoard");
 	}
 
 	@Override
 	public void insertDiscountProdBoard(Discount discount) throws Exception {
-		// TODO Auto-generated method stub
-		
+		sqlSession.insert("ProductBoardMapper.insertDiscountProdBoard", discount);
 	}
 
 	@Override
 	public int selectRandomProdBoardNo() throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		return sqlSession.selectOne("ProductBoardMapper.getRandomProdBoardNo");
 	}
 
 	@Override

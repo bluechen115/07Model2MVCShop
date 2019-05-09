@@ -8,8 +8,10 @@ public class ProductBoard {
 	private int quantity;
 	private String boardRegDate;
 	private int viewCount;
-	
-	
+	private int prodPrice;
+
+
+
 	public ProductBoard() {
 	}
 
@@ -71,6 +73,16 @@ public class ProductBoard {
 
 	public void setViewCount(int viewCount) {
 		this.viewCount = viewCount;
+	}
+
+
+	public int getProdPrice() {
+		return prodPrice;
+	}
+
+
+	public void setProdPrice(int prodPrice) {
+		this.prodPrice = prodPrice;
 	}
 
 
