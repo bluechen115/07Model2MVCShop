@@ -52,16 +52,16 @@ public class PurchaseServiceImpl implements PurchaseService {
 		List<Code> codeList=purchaseDao.codeCall("tr01");
 		int totalCount = purchaseDao.getgetTotalCount(map);
 		
-		List<User> userList=new ArrayList<User>();
+		User user=null;
 		for(int i=0;i<purchaseList.size();i++) {
-			buyerId=purchaseList.get(i).getBuyer().getUserId();
-			userList.add(userDao.getUser(buyerId));
+			user=new User();
+			user=userDao.getUser(purchaseList.get(i).getBuyer().getUserId());
+			purchaseList.get(i).setBuyer(user);
 		}
-		
+
 		map=new HashMap<String,Object>();
 		
 		map.put("purchaseList", purchaseList);
-		map.put("userList", userList);
 		map.put("totalCount", totalCount);
 		map.put("codeList", codeList);
 		

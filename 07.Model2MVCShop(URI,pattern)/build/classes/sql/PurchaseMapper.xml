@@ -7,9 +7,9 @@
 <mapper namespace="PurchaseMapper">
 
 	<resultMap id="purchaseSelectMap" type="purchase" >
-		<result property="divyAddr" column="dlvy_addr" jdbcType="VARCHAR"/>
-		<result property="divyDate" column="dlvy_date" jdbcType="DATE"/>
-		<result property="divyRequest" column="dlvy_request" jdbcType="VARCHAR"/>
+		<result property="receiverAddr" column="dlvy_addr" jdbcType="VARCHAR"/>
+		<result property="receiverDate" column="dlvy_date" jdbcType="DATE"/>
+		<result property="receiverRequest" column="dlvy_request" jdbcType="VARCHAR"/>
 		<result property="orderDate" column="order_date" jdbcType="DATE"/>
 		<result property="paymentOption" column="payment_option" jdbcType="CHAR"/>
 		<result property="receiverName" column="receiver_name" jdbcType="VARCHAR"/>
@@ -50,7 +50,9 @@
 						<where>
 						u.user_id=tr.buyer_id 
 						AND pd.prod_no=tr.prod_no
-						AND u.user_id=#{buyerId}
+						<if test='buyerId != "admin" and buyerId != "manager"'>
+						AND u.user_id=#{buyerId}					
+						</if>
 						<if test='searchCondition != null and searchCondition == "0"'>
 					 		AND tr.prod_no=#{search.searchKeyword}
 						</if>
@@ -61,7 +63,7 @@
 				 			AND pd.price=#{search.searchKeyword}
 						</if>
 						</where>
-						ORDER BY pd.reg_date DESC) inner_table 
+						ORDER BY tr.order_date DESC) inner_table 
 		WHERE ROWNUM &lt;= #{search.endRowNum} )
 		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum}
 	</select>
@@ -71,15 +73,15 @@
 				RECEIVER_NAME,RECEIVER_PHONE,DLVY_ADDR,
 				DLVY_REQUEST,TRAN_STATUS_CODE,ORDER_DATE,DLVY_DATE,PURCHASE_PRICE) 
 				VALUES(SEQ_TRANSACTION_TRAN_NO.nextval,#{purchaseProd.prodNo:NUMERIC},#{buyer.userId:VARCHAR},#{paymentOption:VARCHAR},
-					#{receiverName:VARCHAR},#{receiverPhone:VARCHAR},#{divyAddr:VARCHAR},
-					#{divyRequest:VARCHAR},#{tranCode:CHAR},sysdate,#{divyDate:DATE},#{purchasePrice:NUMERIC})
+					#{receiverName:VARCHAR},#{receiverPhone:VARCHAR},#{receiverAddr:VARCHAR},
+					#{receiverRequest:VARCHAR},#{tranCode:CHAR},sysdate,#{receiverDate:DATE},#{purchasePrice:NUMERIC})
 	</insert>
 	
 	<update id="updatePurchase" parameterType="purchase">
 		UPDATE TRANSACTION 
 		SET payment_option=#{paymentOption:CHAR},receiver_name=#{receiverName:VARCHAR}, 
-				receiver_phone=#{receiverPhone:VARCHAR},dlvy_addr=#{divyAddr:VARCHAR}, 
-				dlvy_request=#{divyRequest:VARCHAR},dlvy_date=#{divyDate:DATE} 
+				receiver_phone=#{receiverPhone:VARCHAR},dlvy_addr=#{receiverAddr:VARCHAR}, 
+				dlvy_request=#{receiverRequest:VARCHAR},dlvy_date=#{receiverDate:DATE} 
 		WHERE tran_no=#{tranNo}
 	</update>
 	
@@ -102,7 +104,9 @@
 						<where>
 						u.user_id=tr.buyer_id 
 						AND pd.prod_no=tr.prod_no
-						AND u.user_id=#{buyerId}
+						<if test='buyerId != "admin" and buyerId != "manager"'>
+						AND u.user_id=#{buyerId}					
+						</if>
 						<if test='searchCondition != null and searchCondition == "0"'>
 					 		AND tr.prod_no=#{search.searchKeyword}
 						</if>

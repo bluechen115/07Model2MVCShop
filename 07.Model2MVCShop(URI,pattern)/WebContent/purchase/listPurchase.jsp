@@ -37,7 +37,7 @@
 						style="padding-left: 10px;">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0">
 							<tr>
-								<td width="93%" class="ct_ttl01">구매 목록조회</td>
+								<td width="93%" class="ct_ttl01">${user.role eq 'admin' ? "상품배송관리":"구매 목록조회"}</td>
 							</tr>
 						</table>
 					</td>
@@ -70,13 +70,12 @@
 					<td class="ct_list_b">정보수정</td>
 				</tr>
 				<tr>
-					<td colspan="11" bgcolor="808285" height="1"></td>
+					<td colspan="15" bgcolor="808285" height="1"></td>
 				</tr>
 
 
 				<c:set var="i" value="0" />
 				<c:forEach var="purchase" items="${map.purchaseList}">
-					<c:set var="user" value="${map.userList[i]}" />
 					<tr class="ct_list_pop">
 						<td align="center">
 							<a href="/purchase/getPurchase?tranNo=${purchase.tranNo}">${i+1}</a>
@@ -87,14 +86,14 @@
 						<td align="left">${purchase.purchaseProd.prodName}</td>
 						<td></td>
 						<td align="left">
-							<a href="/user/getUser?userId=${user.userId}">${user.userId}</a>
+							<a href="/user/getUser?userId=${user.userId}">${purchase.buyer.userId}</a>
 						</td>
 						<td></td>
 			
-						<td align="left">${user.userName}</td>
+						<td align="left">${purchase.buyer.userName}</td>
 						<td></td>
 
-						<td align="left">${user.phone}</td>
+						<td align="left">${purchase.buyer.phone}</td>
 						<td></td>
 						<td align="left">현재 
 						
@@ -106,13 +105,23 @@
 						상태 입니다.
 						</td>
 						<td></td>
+						
 						<td align="left">
-							<c:if test="${purchase.tranCode=='3'}">
-								<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=4">물건도착</a>
-							</c:if>
-							<c:if test="${purchase.tranCode=='2'}">
-								<a href="/purchase/cancelPurchase?tranNo=${purchase.tranNo}&tranCode=5">구매취소</a>
-							</c:if>
+						<c:choose>
+							<c:when test="${user.role == 'admin'}">
+								<c:if test="${purchase.tranCode=='2'}">
+								<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=3">물품발송</a>
+								</c:if>
+							</c:when>
+							<c:otherwise>
+								<c:if test="${purchase.tranCode=='3'}">
+									<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=4">물건도착</a>
+								</c:if>
+								<c:if test="${purchase.tranCode=='2'}">
+									<a href="/purchase/cancelPurchase?tranNo=${purchase.tranNo}&tranCode=5">구매취소</a>
+								</c:if>	
+							</c:otherwise>
+						</c:choose>
 						</td>
 					</tr>
 					
@@ -120,7 +129,7 @@
 				</c:forEach>
 
 				<tr>
-					<td colspan="11" bgcolor="D6D7D6" height="1"></td>
+					<td colspan="15" bgcolor="D6D7D6" height="1"></td>
 				</tr>
 
 			</table>

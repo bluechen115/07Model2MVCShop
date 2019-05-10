@@ -4,15 +4,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 
-<%-- <%
-	Purchase purchase=(Purchase)request.getAttribute("purchase");
-	User user=(User)request.getAttribute("user");
-	
-	System.out.println("listPurchaseDetail.jsp의 purchase : "+purchase);
-	System.out.println("listPurchaseDetail.jsp의 user : "+user);
-%> --%>
-
-
 
 <html>
 <head>
@@ -57,7 +48,6 @@
 				<table width="100%" border="0" cellspacing="0" cellpadding="0">
 					<tr>
 						<td width="105">
-							<%-- <%=purchase.getPurchaseProd().getProdNo()%></td> --%>
 							${purchase.purchaseProd.prodNo}
 						</td>
 						<td></td>
@@ -74,7 +64,6 @@
 			</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getBuyer().getUserId()%> --%>
 				${purchase.buyer.userId}
 			</td>
 		</tr>
@@ -86,12 +75,10 @@
 			<td width="104" class="ct_write">구매방법</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%if(purchase.getPaymentOption().equals("1")){ %> --%> <c:if
-					test="${purchase.paymentOption == '1'}">
+				<c:if test="${purchase.paymentOption == '1'}">
 				현금구매
-			</c:if> <c:if test="${purchase.paymentOption == '2'}">
+				</c:if> <c:if test="${purchase.paymentOption == '2'}">
 				신용구매
-			<%-- <%}%> --%>
 				</c:if>
 			</td>
 		</tr>
@@ -102,7 +89,7 @@
 			<td width="104" class="ct_write">구매자이름</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getReceiverName()%> --%> ${purchase.receiverName}
+				${purchase.receiverName}
 			</td>
 		</tr>
 		<tr>
@@ -112,7 +99,7 @@
 			<td width="104" class="ct_write">구매자연락처</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getReceiverPhone()%> --%> ${purchase.receiverPhone}
+				${purchase.receiverPhone}
 			</td>
 		</tr>
 		<tr>
@@ -122,7 +109,7 @@
 			<td width="104" class="ct_write">구매자주소</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getDivyAddr()%> --%> ${purchase.divyAddr}
+				${purchase.receiverAddr}
 			</td>
 		</tr>
 		<tr>
@@ -132,7 +119,7 @@
 			<td width="104" class="ct_write">구매요청사항</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getDivyRequest()%> --%> ${purchase.divyRequest}
+				${purchase.receiverRequest}
 			</td>
 		</tr>
 		<tr>
@@ -142,7 +129,7 @@
 			<td width="104" class="ct_write">배송희망일</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getDivyDate()%> --%> ${purchase.divyDate}
+				${purchase.receiverDate}
 			</td>
 		</tr>
 
@@ -154,7 +141,7 @@
 			<td width="104" class="ct_write">주문일</td>
 			<td bgcolor="D6D6D6" width="1"></td>
 			<td class="ct_write01">
-				<%-- <%=purchase.getOrderDate()%> --%> ${purchase.orderDate}
+				${purchase.orderDate}
 			</td>
 		</tr>
 
@@ -176,7 +163,6 @@
 								width="17" height="23" /></td>
 							<td background="/images/ct_btnbg02.gif" class="ct_btn01"
 								style="padding-top: 3px;">
-								<%-- <a href="/updatePurchaseView.do?tranNo=<%=purchase.getTranNo()%>">수정</a> --%>
 								<a href="/purchase/updatePurchaseView?tranNo=${purchase.tranNo}">수정</a>
 							</td>
 							<td width="14" height="23"><img src="/images/ct_btnbg03.gif"

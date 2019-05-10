@@ -67,7 +67,6 @@
 						<if test='orderType != null and orderType == "3"'>
 							ORDER BY p.price ASC
 						</if>
-					
 				) inner_table 
 						WHERE ROWNUM &lt;= #{endRowNum} )
 		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}

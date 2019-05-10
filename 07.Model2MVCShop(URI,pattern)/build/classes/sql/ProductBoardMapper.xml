@@ -79,6 +79,9 @@
 						<if test='orderType != null and orderType == "3"'>
 							ORDER BY p.price ASC
 						</if>
+						<if test="orderType == null">
+						ORDER BY pb.board_reg_date DESC						
+						</if>
 						) inner_table 
 				WHERE ROWNUM &lt;= #{endRowNum} )
 		WHERE row_seq BETWEEN #{startRowNum} AND #{endRowNum}

@@ -60,12 +60,12 @@ function history(){
 			<table  border="0" cellspacing="0" cellpadding="0" width="159">
 				<tr>
 					<td class="Depth03">
-						<a href="../product/addProductView.jsp;" target="rightFrame">판매상품등록</a>
+						<a href="../product/addProductView.jsp;" target="rightFrame">판매글 등록</a>
 					</td>
 				</tr>
 				<tr>
 					<td class="Depth03">
-						<a href="/product/listProduct?menu=manage"  target="rightFrame">판매상품관리</a>
+						<a href="/product/listProduct?menu=manage"  target="rightFrame">판매글 관리</a>
 					</td>
 				</tr>
 				<tr>
@@ -85,7 +85,13 @@ function history(){
 					<a href="/product/listProduct?menu=search" target="rightFrame">상 품 검 색</a>
 				</td>
 			</tr>
-			
+			<c:if test="${!empty user && user.role == 'admin'}">
+			<tr>
+				<td class="Depth03">
+					<a href="/purchase/listPurchase"  target="rightFrame">상품배송관리</a>
+				</td>
+			</tr>
+			</c:if>
 			<c:if test="${ !empty user && user.role == 'user'}">
 			<tr>
 				<td class="Depth03">

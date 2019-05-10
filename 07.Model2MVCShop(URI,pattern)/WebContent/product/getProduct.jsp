@@ -140,10 +140,10 @@
 			</c:if>
 		</td>
 		<td bgcolor="D6D6D6" width="1"></td>
-			
+					
 			<c:choose>
-				<c:when test="${productBoard.boardNo==discount.discountBoard || purchaseCount % 4 == 0}">
-					<c:if test="${!user.userId eq 'admin'}">
+				<c:when test="${productBoard.boardNo == discount.discountBoard || purchaseCount % 4 == 0}">
+					<c:if test="${user.userId != 'admin'}">
 						<td class="ct_write01"><strike>${product.price}</strike>
 						&nbsp;&nbsp;
 						${product.resultPrice}

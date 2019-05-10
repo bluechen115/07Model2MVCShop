@@ -168,6 +168,7 @@ public class PurchaseController {
 		search.setPageSize(pageSize);
 		
 		User user=(User)session.getAttribute("user");
+		System.out.println("listPurchase¿« user :: "+user);
 		Map<String, Object> map=purchaseService.getPurchaseList(search, user.getUserId());
 		System.out.println("purchaseService ≥°");
 		
@@ -241,6 +242,19 @@ public class PurchaseController {
 		return "redirect:/purchase/listPurchase";
 	}
 	
+	@RequestMapping("updateTranCode")
+	public String updateTranCodeByTranNo(@RequestParam("tranNo") int tranNo,
+											@RequestParam("tranCode") String tranCode
+											) throws Exception{
+		Purchase purchase = new Purchase();
+		purchase.setTranNo(tranNo);
+		purchase.setTranCode(tranCode);
+		
+		purchaseService.updateTranCode(purchase);
+		
+		return "redirect:/purchase/listPurchase";
+	}
+	
 	@RequestMapping("updateTranCodeByProd")
 	public String updateTranCodeByProd(@RequestParam("prodNo") int prodNo,
 										@RequestParam("tranCode") String tranCode) throws Exception{
@@ -248,9 +262,7 @@ public class PurchaseController {
 		Purchase purchase=new Purchase();
 		Product product=new Product();
 		
-		Map<String, Object> map=productService.getProduct(prodNo);
-		product=(Product)map.get("product");
-		
+		product.setProdNo(prodNo);
 		
 		purchase.setPurchaseProd(product);
 		purchase.setTranCode(tranCode);
