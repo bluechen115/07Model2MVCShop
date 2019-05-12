@@ -2,7 +2,12 @@ package com.model2.mvc.web.product;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -19,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,10 +73,26 @@ public class ProductController {
 	int pageSize;
 	
 	@RequestMapping("addProduct")
-	public ModelAndView addProduct(@ModelAttribute("productBoard") ProductBoard productBoard,
-									@ModelAttribute("product")Product product) throws Exception{
+	public ModelAndView addProduct(HttpServletRequest request,
+									HttpServletResponse response,
+									@ModelAttribute("productBoard") ProductBoard productBoard,
+									@ModelAttribute("product") Product product) throws Exception{
 		System.out.println("/addProduct");
 
+		String path = "//Users//munmyeonghwan//git//07Model2MVCShop//07.Model2MVCShop(URI,pattern)//WebContent//images//uploadFiles//";
+		
+		MultipartFile uploadfile = product.getUploadFile();
+		
+		String fileName = uploadfile.getOriginalFilename();
+		if(fileName.equals("")) {
+			product.setFileName(null);
+		}else {
+			product.setFileName(fileName);
+			
+			uploadfile.transferTo(new File(path+fileName));
+		}
+
+		
 		productBoardService.addProductBoard(productBoard);
 		
 		String manuDate = product.getManuDate().replaceAll("-", "");
